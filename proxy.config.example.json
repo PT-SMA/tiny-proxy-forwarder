@@ -1,0 +1,42 @@
+[
+  {
+    "source": "/oracle/:env/api",
+    "target": {
+      "prod": "https://your_oracle_fusion_url.fa.ocs.oraclecloud.com",
+      "dev": "https://your_oracle_fusion_url.fa.ocs.oraclecloud.com"
+    },
+    "rewrite": "^/oracle/(prod|dev)/api"
+  },
+  {
+    "source": "/smart/:env/api",
+    "target": {
+      "prod": "https://your_custom_url",
+      "dev": "https://your_custom_url"
+    },
+    "rewrite": "^/smart/(prod|dev)/api"
+  },
+  {
+    "source": "/oracle/:env/report",
+    "target": {
+      "prod": "http://node-red:1880/oracle/prod/report",
+      "dev": "http://node-red:1880/oracle/dev/report"
+    },
+    "rewrite": "^/oracle/(prod|dev)/report"
+  },
+  {
+    "source": "/oracle/:env/items",
+    "target": {
+      "prod": "http://node-red:1880/oracle/prod/items",
+      "dev": "http://node-red:1880/oracle/dev/items"
+    },
+    "rewrite": "^/oracle/(prod|dev)/items"
+  },
+  {
+    "source": "/oracle/:env/datastore",
+    "target": {
+      "prod": "http://node-red:1880/oracle/prod/datastore",
+      "dev": "http://node-red:1880/oracle/dev/datastore"
+    },
+    "rewrite": "^/oracle/(prod|dev)/datastore"
+  }
+]
