@@ -28,11 +28,15 @@ proxyRules.forEach((rule: any) => {
       }
 
       const resolvedTarget = interpolateEnv(target[env]);
-
+      console.log(
+        new Date().toISOString(),
+        `[Resolved Target]\n- req:${target[env]}\n- res:${resolvedTarget}`
+      );
       const proxy = createProxyMiddleware({
         target: resolvedTarget,
         changeOrigin: true,
         pathRewrite: (path) => path.replace(new RegExp(rewrite), ""),
+        logger: console,
       });
 
       proxy(req, res, next);
