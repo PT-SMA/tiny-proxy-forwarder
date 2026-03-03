@@ -8,7 +8,7 @@ const app = express();
 
 const PORT = process.env.PORT || 9876;
 
-app.use(proxyRulesController);
+proxyRulesController(app);
 
 app.get("/", (req, res) => {
   res.json({
