@@ -1,50 +1,14 @@
-import fs from "fs";
-import path from "path";
 import dotenv from "dotenv";
 import express, { Request, Response, NextFunction } from "express";
-import { createProxyMiddleware } from "http-proxy-middleware";
+import { proxyRules, proxyRulesController } from "./middleware/rules";
 
-dotenv.config({ path: [".env", ".env.local"], debug: true });
-
-const CONFIG_PATH = path.resolve("./proxy.config.json");
-const proxyRules = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf8"));
+dotenv.config({ path: [".env", ".env.local"], debug: true, override: true });
 
 const app = express();
+
 const PORT = process.env.PORT || 9876;
 
-function interpolateEnv(str: string): string {
-  return str.replace(/\$\{([^}]+)\}/g, (_, key) => process.env[key] || "");
-}
-
-proxyRules.forEach((rule: any) => {
-  const { source, target, rewrite } = rule;
-  app.use(source, (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { env } = req.params;
-
-      if (!target[env]) {
-        res.status(400).json({ error: `Invalid environment: ${env}` });
-        return;
-      }
-
-      const resolvedTarget = interpolateEnv(target[env]);
-      console.log(
-        new Date().toISOString(),
-        `[Resolved Target]\n- req:${target[env]}\n- res:${resolvedTarget}`
-      );
-      const proxy = createProxyMiddleware({
-        target: resolvedTarget,
-        changeOrigin: true,
-        pathRewrite: (path) => path.replace(new RegExp(rewrite), ""),
-        logger: console,
-      });
-
-      proxy(req, res, next);
-    } catch (err) {
-      next(err);
-    }
-  });
-});
+app.use(proxyRulesController);
 
 app.get("/", (req, res) => {
   res.json({
